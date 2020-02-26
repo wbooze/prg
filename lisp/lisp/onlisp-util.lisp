@@ -228,6 +228,15 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (export '(map0-n map1-n mapa-b map-> mappend mapcars rmapcar)))   ; LMH
 
+(defun mapa-b (fn a b &optional (step 1))
+  (declare (function fn) (fixnum a b step))   ; LMH
+  "Apply the fn to the list of numbers a...b, stepping with step."  ; LMH
+  (do ((i a (+ i step))
+       (result nil))
+      ((> i b) (nreverse result))
+    (declare (fixnum i))   ; LMH
+    (push (funcall fn i) result)))
+
 (defun map0-n (fn n)
   (declare (function fn) (fixnum n))   ; LMH
   "Apply the fn to the list of numbers 0...n."  ; LMH
@@ -237,15 +246,6 @@
   (declare (function fn) (fixnum n))   ; LMH
   "Apply the fn to the list of numbers 1...n."  ; LMH
   (mapa-b fn 1 n))
-
-(defun mapa-b (fn a b &optional (step 1))
-  (declare (function fn) (fixnum a b step))   ; LMH
-  "Apply the fn to the list of numbers a...b, stepping with step."  ; LMH
-  (do ((i a (+ i step))
-       (result nil))
-      ((> i b) (nreverse result))
-    (declare (fixnum i))   ; LMH
-    (push (funcall fn i) result)))
 
 (defun map-> (fn start test-fn succ-fn)
   (declare (function fn test-fn succ-fn))	; LMH
@@ -298,7 +298,7 @@
                                  (the simple-base-string (apply #'read-line args))   ; LMH
                                  ")"))))
 
-(declaim (stream *query-io*))  ; LMH
+;(declaim (stream *query-io*))  ; LMH
 
 (defun prompt (&rest args)
   "Prompt by outputting text and reading something typed."   ; LMH
